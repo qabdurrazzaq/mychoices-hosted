@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block head_title %}{% endblock %}</title>
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+  <link rel = "stylesheet" href  = '{% static "css/bootstrap.min.css" %}'>
+  <link class="rounded" rel="icon" href="{% static 'img/MyChoices.jpg' %}" />
+  <!-- <script src="{% static 'stripe/js.stripe.com' %}"></script> -->
+  <script src="https://js.stripe.com/v3/"></script>
+  {% block other_css %}{% endblock %}
+  <style>
+    .bg-img-thumb{
+    width: auto; 
+    height: auto;
+    background-image: url("/static/img/placeholder.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  input[type="number"]::-webkit-input-placeholder {
+    color: white;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    {% if request.session.marketing_message %}
+    <div id="marketing-message-btn" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 0px;">
+      <strong><center>{{ request.session.marketing_message }}</center></strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    {% include 'modal.html' %}
+    {% include 'navbar.html' %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert 
+    {% if 'success' in message.tags %} alert-success
+    {% elif 'warning' in message.tags %} alert-warning
+    {% elif 'error' in message.tags %} alert-danger
+    {% endif %} 
+    alert-dismissible fade show" role="alert" style="padding-bottom: 0px;">
+        <p class="messages">
+          {% if "safe" in message.tags %}
+            {{ message|safe }}
+          {% else %}
+            {{message}}
+          {% endif %}
+        </p>  
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <!-- {% block carousel %}
+    {% endblock %} -->
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+
+<script>
+  $(document).ready(function(){
+    $('#marketing-message-btn').click(function(){
+      $.ajax({
+        type: "POST",
+        url: "{% url 'dismiss_marketing_message' %}", 
+        data: {
+          "dismiss-marketing": true,
+          "csrfmiddlewaretoken": "{{ csrf_token }}",
+        },
+        success: function(data){
+          console.log(data)
+        },
+        error: function(){
+          alert("Something went wrong")
+        },
+      });
+    });
+    
+    $('#sendMarketingForm').click(function(e){
+      e.preventDefault()
+      var mform = $('#sendForm').serialize()
+      $.ajax({
+        type: "POST",
+        url: "{% url 'ajax_email_signup' %}", 
+        data: mform,
+        success: function(data){
+          $('#exampleModal').modal("hide");
+        },
+        error: function(data){
+          var obj = data.responseJSON
+          $('#modalMessage').html('<p style="color:red">' + obj.email + '</p>')
+        },
+      });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function(){
+    {% block jquery %}
+    {% endblock %}
+  });
+</script>
+</html>

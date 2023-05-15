@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}
+MyChoices
+{% endblock %}
+
+{% block carousel %}
+{% if sliders %}
+<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    {% for slider in sliders %}
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ forloop.counter|add:'-1' }}" {% if forloop.first %} class="active" {% endif %} aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+    {% endfor %}
+  </div>
+  <div class="carousel-inner">
+    {% for slider in sliders %}
+    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+      {% if slider.url_link %} <a href="{{slider.get_image_url}}">{% endif %}
+      <img src="{{ slider.get_image_url|safe }}" class="d-block w-100">
+      {% if slider.url_link %}</a> {% endif %}
+      <div class="carousel-caption d-none d-md-block" style="font-family: Pricedown;">
+        {% if slider.header_text %}
+        <h1>{{ slider.header_text }}</h1>
+        {% endif %}
+        {% if slider.text %}
+        <h2>{{ slider.text }}</h2>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"  data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"  data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+    <br>
+    <div class="row d-flex flex-wrap align-items-center">
+        {% for product in products %}
+        <div class="col-sm-12 col-md-6 col-lg-6 col-12 col-xl-4">
+          <div class="thumbnail">
+            {% if product.productimage_set.all %}
+            {% for item in product.productimage_set.all %}
+            <a href="{{ product.get_absolute_url }}">
+              <div class="bg-img-thumb" style="background-image: url('/media/{{MEDIA_URL}}{{item.image}}');height: 210px; width: 250px; margin: 0 auto;"></div>
+            </a>
+            {% endfor %}
+            {% else %}
+                <img src="{% static '/img/placeholder.jpg' %}" class="responsive">
+            {% endif %}
+          </div>
+            <hr>
+            <div class="caption">
+              <h3>{{product.title}}</h3>
+              <p><a href='{{ product.get_absolute_url }}' class="btn btn-dark">Buy</a>
+              </p>
+            </div>
+          <br>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+{% endblock %}
+  
