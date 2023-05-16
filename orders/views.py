@@ -86,7 +86,7 @@ def checkout(request):
             new_order.save()
             del request.session['cart_id']
             del request.session['items_total']
-            messages.success(request, "Your Cart Products has been purchased refer <a href='https://dashboard.stripe.com/test/payments'> https://dashboard.stripe.com/test/payments </a>",extra_tags='safe')
+            messages.success(request, "Products successfully purchased.")
             return HttpResponseRedirect(reverse("home"))
         # print(card)
         # print(charge)
