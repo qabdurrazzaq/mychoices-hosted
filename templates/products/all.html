@@ -12,8 +12,8 @@ Products
           <div class="thumbnail">
             {% if product.productimage_set.all %}
             {% for item in product.productimage_set.all %}
-            <a href="{{ product.get_absolute_url }}">
-              <a class="bg-img-thumb" href="url('/media/{{MEDIA_URL}}{{item.image}}" style="width: 15%; aspect-ratio: 3/2; object-fit: contain; mix-blend-mode: color-burn; margin: 0 auto;"></a>
+            <a href="{{ product.get_absolute_url }}" style="width: 15%; aspect-ratio: 3/2; object-fit: contain; mix-blend-mode: color-burn;">
+              <div class="bg-img-thumb" style="background-image: url('/media/{{MEDIA_URL}}{{item.image}}');height: 210px; width: 250px; margin: 0 auto;"></div>
             </a>
             {% endfor %}
             {% else %}
